@@ -43,6 +43,10 @@
                                     <h3 class="card-title">Antrean Farmasi (<?php echo date('d-m-Y'); ?>)</h3>
 
                                     <div class="card-tools">
+                                        <a type="button" class="btn btn-tool" href="display.php" target="_blank">
+                                            <i class="fas fa-tv"></i> Display Antrean
+                                        </a>
+
                                         <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-pasien">
                                             <i class="fas fa-plus"></i> Tambah Pasien
                                         </button>
@@ -88,14 +92,26 @@
                                                 echo "<td align='center' >$row[estimasi_pelayanan]" . " mnt</td>";
                                                 echo "<td align='center'>$row[selesai]</td>";
                                                 //0 diproses, 1 selesai, 2 obat sudah diambil
-                                                if ($row['status'] == 0) {
-                                                    echo "<td align='center' >Diproses</td>";
-                                                    echo "<td align='center' ><button onclick='javascript:showWindow(this)' class='btn btn-info btn-xs' \
-                                                    data-nama='$row[nama]'><i class='fas fa-volume-up'></i> Panggil</button></td>";
-                                                } else {
-                                                    echo "<td align='center' >Selesai</td>";
+                                                if ($row['status'] == 0)
+                                                    echo "<td align='center' > <span class='badge badge-pill badge-warning'>Diproses</span> </td>";
+                                                else if ($row['status'] == 1)
+                                                    echo "<td align='center' > <span class='badge badge-pill badge-primary'>Selesai</span> </td>";
+                                                else if ($row['status'] == 2)
+                                                    echo "<td align='center' > <span class='badge badge-pill badge-success'>Sudah diambil</span> </td>";
+
+                                                if ($row['status'] == 0 || $row['status'] == 1) {
+                                                    echo "<td align='right' >";
+                                                    if ($row['status'] == 0)
+                                                        echo "<button onclick='javascript:editPasien(this)' class='btn btn-secondary btn-xs' 
+                                                    data-nama='$row[nama]' data-estimasi='$row[estimasi_pelayanan]' data-keterangan='$row[keterangan]' ><i class='fas fa-edit'></i> </button> &nbsp;";
+
+                                                    echo "<button onclick='javascript:showWindow(this)' class='btn btn-info btn-xs' 
+                                                    data-nama='$row[nama]'><i class='fas fa-volume-up'></i> Panggil</button>";
+                                                    echo "</td>";
+                                                } else
                                                     echo "<td></td>";
-                                                }
+
+
                                                 $no += 1;
                                                 echo "</tr>";
                                             }
@@ -218,16 +234,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <small class="text-muted">Status</small>
-                                <select id="status" class="form-control form-control-sm">
-                                    <option value="0">Diproses</option>
-                                    <option value="1">Selesai</option>
-                                    <option value="2">Sudah diambil</option>
-                                </select>
-                            </div>
-                        </div>
+
 
                         <div class="col-md-4">
                             <div class="form-group">
@@ -286,16 +293,17 @@
                                 id="btn-modal-close">Tutup</button>
                         </div>
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-warning" id="btn-skip"
-                                title="Sudah dipanggil tapi tidak datang"><i class="fas fa-forward"></i>
-                                Lewati Panggilan</button>
+                            <button type="button" class="btn btn-primary btn-block" id="btn-skip"><i class="fas fa-check"></i>
+                                Pelayanan Selesai</button>
                         </div>
-                        <div class="col-md-1">
-                        </div>
+
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-success btn-block" id="btn-set"><i
-                                    class="fas fa-check"></i>
-                                Set sudah dipanggil</button>
+                            <button type="button" class="btn btn-success btn-block" id="btn-set-diambil"><i
+                                    class="fas fa-check-double"></i>
+                                Obat Sudah Diambil</button>
+                        </div>
+
+                        <div class="col-md-1">
                         </div>
 
                         <div class="col-md-3">
@@ -428,6 +436,18 @@
             $("#lahirPasien").text(elem.getAttribute('data-tgllahir'));
             $("#umurPasien").text(elem.getAttribute('data-umur'));
             $('#modal-panggil').modal();
+
+        }
+
+        function editPasien(elem) {
+
+            // alert('dd ' + elem.getAttribute('data-nama'));
+
+            $("#pasien").val(elem.getAttribute('data-nama'));
+            $("#estimasi").val(elem.getAttribute('data-estimasi'));
+            $("#keterangan").val(elem.getAttribute('data-keterangan'));
+
+            $('#modal-pasien').modal();
 
         }
 

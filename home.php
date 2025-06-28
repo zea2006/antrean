@@ -43,7 +43,7 @@
                                     <h3 class="card-title">Antrean Farmasi (<?php echo date('d-m-Y'); ?>)</h3>
 
                                     <div class="card-tools">
-                                        <button type="button" class="btn btn-tool">
+                                        <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-pasien">
                                             <i class="fas fa-plus"></i> Tambah Pasien
                                         </button>
 
@@ -175,6 +175,79 @@
     <!-- /.modal -->
 
 
+    <div class="modal fade" id="modal-pasien">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> <i class="fas fa-user"></i> Pasien</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <small class="text-muted">Nama Pasien</small>
+                                <input type="Text" class="form-control form-control-sm" id="pasien">
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <small class="text-muted">Estimasi Pelayanan (menit)</small>
+                                <select id="estimasi" class="form-control form-control-sm">
+                                    <?php
+                                    for ($i = 1; $i <= 12; $i++) {
+                                        $est = $i * 5;
+                                        echo "<option value='$est'>$est</option> ";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <small class="text-muted">Keterangan</small>
+                                <select id="keterangan" class="form-control form-control-sm">
+                                    <option value=""></option>
+                                    <option value="Non Racik">Non Racik</option>
+                                    <option value="Racik">Racik</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <small class="text-muted">Status</small>
+                                <select id="status" class="form-control form-control-sm">
+                                    <option value="0">Diproses</option>
+                                    <option value="1">Selesai</option>
+                                    <option value="2">Sudah diambil</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <small class="text-muted">&nbsp;</small>
+                                <button class="btn btn-success btn-sm btn-block " id="btn-simpan-pasien"> <i
+                                        class="fas fa-save"></i>
+                                    Simpan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </div>
+    <!-- /.modal -->
+
+
     <div class="modal fade" id="modal-panggil" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -191,23 +264,12 @@
                                         <td style=" border-top: 0;">:</td>
                                         <td style=" border-top: 0;"><span id="namaPasien">Wahyu Kuncoro</span></td>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <td>Norm</td>
                                         <td>:</td>
                                         <td><span id="normPasien">525252</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Asal Ruangan</td>
-                                        <td>:</td>
-                                        <td><span id="asalPasien">Poli Syaraf</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tgl Lahir / Kelamin /Umur</td>
-                                        <td>:</td>
-                                        <td> <span id="lahirPasien">2024-10-20</span> / <span
-                                                id="kelaminPasien">Laki-Laki</span>
-                                            / <span id="umurPasien">30</span> </td>
-                                    </tr>
+                                    </tr> -->
+
                                     <tr>
                                         <td colspan="3"></td>
                                     </tr>

@@ -87,12 +87,13 @@
                                                 echo "<td align='center' >$row[mulai]</td>";
                                                 echo "<td align='center' >$row[estimasi_pelayanan]" . " mnt</td>";
                                                 echo "<td align='center'>$row[selesai]</td>";
+                                                //0 diproses, 1 selesai, 2 obat sudah diambil
                                                 if ($row['status'] == 0) {
-                                                    echo "<td>Diproses</td>";
-                                                    echo "<td><button onclick='javascript:showWindow(this)' class='btn btn-info btn-xs' \
+                                                    echo "<td align='center' >Diproses</td>";
+                                                    echo "<td align='center' ><button onclick='javascript:showWindow(this)' class='btn btn-info btn-xs' \
                                                     data-nama='$row[nama]'><i class='fas fa-volume-up'></i> Panggil</button></td>";
                                                 } else {
-                                                    echo "<td>Selesai</td>";
+                                                    echo "<td align='center' >Selesai</td>";
                                                     echo "<td></td>";
                                                 }
                                                 $no += 1;

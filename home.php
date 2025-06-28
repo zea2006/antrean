@@ -173,7 +173,7 @@ date_default_timezone_set("Asia/Kuala_Lumpur");
                             <div class="form-group">
                                 <small class="text-muted">Text To Speech</small>
                                 <input type="Text" class="form-control form-control-sm"
-                                    value="Pasien atas nama bapak, wahyu kuncoro, Harap ke loket farmasi" id="sampel">
+                                    value="Pasien atas nama, wahyu kuncoro, Harap ke loket farmasi" id="sampel">
                             </div>
                         </div>
                         <div class="col-md-2">
@@ -480,54 +480,6 @@ date_default_timezone_set("Asia/Kuala_Lumpur");
 
 
         /*end here */
-
-
-        $("#kodebooking").focus();
-        $("#i-kode").keypress(function(event) {
-            if (event.which == 13) {
-                $("#btn-cek").trigger("click");
-            }
-        });
-
-        $("#i-kode").focus();
-
-        $("#btn-cek").click(function() {
-            let kode = $.trim($("#i-kode").val());
-            let url = "http://127.0.0.1:8000/anjungan/cekappointment/:kb";
-            url = url.replace(':kb', kode);
-
-            //<i class="fa fa-spinner fa-spin"></i>
-
-
-            $.blockUI({
-                message: null
-            });
-            $.ajax({
-                async: true,
-                url: url,
-                dataType: 'JSON',
-                success: function(data) {
-                    $.unblockUI();
-                    if (data.code == 200) {
-                        let resp = data.response;
-                        let redir = "http://127.0.0.1:8000/anjungan/jkn/:nk";
-                        redir = redir.replace(':nk', resp.no_kartu);
-                        window.location.href = redir;
-
-                    } else {
-
-                        Swal.fire('',
-                            'Data Pendaftaran Pasien Mobile JKN Hari ini Dengan Kode booking/No Kartu <b>' +
-                            kode + '</b> Tidak Ditemukan', 'error');
-                    }
-                },
-                error: function(xhr) {
-                    $.unblockUI();
-                    alert("Error Cek Pasien!");
-                }
-
-            });
-        });
     </script>
 
 

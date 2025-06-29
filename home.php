@@ -51,7 +51,7 @@ date_default_timezone_set("Asia/Kuala_Lumpur");
                                             <i class="fas fa-tv"></i> Display Antrean
                                         </a>
 
-                                        <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-pasien">
+                                        <button type="button" class="btn btn-tool" id="btn-tambah">
                                             <i class="fas fa-plus"></i> Tambah Pasien
                                         </button>
 
@@ -106,11 +106,11 @@ date_default_timezone_set("Asia/Kuala_Lumpur");
                                                 if ($row['status'] == 0 || $row['status'] == 1) {
                                                     echo "<td align='right' >";
                                                     if ($row['status'] == 0)
-                                                        echo "<button onclick='javascript:editPasien(this)' class='btn btn-secondary btn-xs' 
-                                                    data-nama='$row[nama]' data-estimasi='$row[estimasi_pelayanan]' data-keterangan='$row[keterangan]' ><i class='fas fa-edit'></i> </button> &nbsp;";
+                                                        echo "<button onclick='javascript:editPasien(this)' class='btn btn-secondary btn-xs' title='Edit Pasien'
+                                                    data-nama='$row[nama]' data-estimasi='$row[estimasi_pelayanan]' data-keterangan='$row[keterangan]' data-id='$row[id]' ><i class='fas fa-edit'></i> </button> &nbsp;";
 
                                                     echo "<button onclick='javascript:showWindow(this)' class='btn btn-info btn-xs' 
-                                                    data-nama='$row[nama]'><i class='fas fa-volume-up'></i> Panggil</button>";
+                                                    data-nama='$row[nama]' data-id='$row[id]' ><i class='fas fa-volume-up'></i> Panggil</button>";
                                                     echo "</td>";
                                                 } else
                                                     echo "<td></td>";
@@ -227,7 +227,7 @@ date_default_timezone_set("Asia/Kuala_Lumpur");
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <small class="text-muted">Keterangan</small>
                                 <select id="keterangan" class="form-control form-control-sm">
@@ -239,6 +239,8 @@ date_default_timezone_set("Asia/Kuala_Lumpur");
                         </div>
 
 
+                        <input type="hidden" id="flag">
+                        <input type="hidden" id="idpasien">
 
                         <div class="col-md-4">
                             <div class="form-group">
@@ -248,6 +250,27 @@ date_default_timezone_set("Asia/Kuala_Lumpur");
                                     Simpan</button>
                             </div>
                         </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <small class="text-muted">&nbsp;</small>
+                                <button class="btn btn-secondary btn-sm btn-block " id="btn-reload"> <i
+                                        class="fas fa-sync"></i>
+                                    Reload</button>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <small class="text-muted">&nbsp;</small>
+                                <button class="btn btn-danger btn-sm btn-block " id="btn-hapus"> <i
+                                        class="fas fa-trash"></i>
+                                    Hapus</button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -292,12 +315,13 @@ date_default_timezone_set("Asia/Kuala_Lumpur");
                     </div>
 
                     <div class="row">
+                        <input type="hidden" id="idpasien-panggil">
                         <div class="col-md-2">
                             <button type="button" class="btn btn-danger btn-block " data-dismiss="modal"
                                 id="btn-modal-close">Tutup</button>
                         </div>
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-primary btn-block" id="btn-skip"><i class="fas fa-check"></i>
+                            <button type="button" class="btn btn-primary btn-block" id="btn-set-selesai"><i class="fas fa-check"></i>
                                 Pelayanan Selesai</button>
                         </div>
 
@@ -420,12 +444,12 @@ date_default_timezone_set("Asia/Kuala_Lumpur");
             setDipanggil = true;
 
             $(this).prop("disabled", true);
-            $data = {
+            let data = {
                 "cmd": "update_antrean",
                 "status": 1,
                 "id": 223
             };
-            postData($data);
+            // postData(data);
             panggilAntrean();
         });
 
@@ -434,11 +458,13 @@ date_default_timezone_set("Asia/Kuala_Lumpur");
             // alert('dd ' + elem.getAttribute('data-nama'));
             setDipanggil = false;
             $("#namaPasien").text(elem.getAttribute('data-nama'));
-            $("#normPasien").text(elem.getAttribute('data-norm'));
-            $("#asalPasien").text(elem.getAttribute('data-ruanganasal'));
-            $("#kelaminPasien").text(elem.getAttribute('data-kelamin'));
-            $("#lahirPasien").text(elem.getAttribute('data-tgllahir'));
-            $("#umurPasien").text(elem.getAttribute('data-umur'));
+            $("#idpasien-panggil").val(elem.getAttribute('data-id'));
+            // $("#normPasien").text(elem.getAttribute('data-norm'));
+            // $("#asalPasien").text(elem.getAttribute('data-ruanganasal'));
+            // $("#kelaminPasien").text(elem.getAttribute('data-kelamin'));
+            // $("#lahirPasien").text(elem.getAttribute('data-tgllahir'));
+            // $("#umurPasien").text(elem.getAttribute('data-umur'));
+
             $('#modal-panggil').modal();
 
         }
@@ -450,31 +476,114 @@ date_default_timezone_set("Asia/Kuala_Lumpur");
             $("#pasien").val(elem.getAttribute('data-nama'));
             $("#estimasi").val(elem.getAttribute('data-estimasi'));
             $("#keterangan").val(elem.getAttribute('data-keterangan'));
-
+            $("#flag").val('update');
+            $("#idpasien").val(elem.getAttribute('data-id'));
+            $("#btn-hapus").show();
+            $("#btn-simpan-pasien").html('<i class="fas fa-edit"></i> Update Pasien');
             $('#modal-pasien').modal();
 
         }
 
 
-        var postData = function(dataLoad, flag = 'update') {
+        var postData = function(dataLoad) {
             return $.ajax({
                 async: true,
-                url: "rest.php?cmd=" + flag,
+                url: "rest.php",
                 type: 'POST',
                 dataType: 'JSON',
                 data: dataLoad,
                 beforeSend: function() {
-                    // $('.content').block({
-                    //     message: 'Cek Jadwal Dokter',
-                    // });
+                    $('.content').block({
+                        message: 'Cek Jadwal Dokter',
+                    });
+                    $("#btn-simpan-pasien").prop("disabled", true);
                 },
                 complete: function() {
-                    // $('.content').unblock();
+                    $('.content').unblock();
+                    $("#btn-simpan-pasien").prop("disabled", false);
                 },
-                success: function(data) {},
+                success: function(data) {
+                    if (data.code == 200) {
+                        if (dataLoad.cmd == 'input') {
+                            alert(data.message + '\r' + 'Lanjutkan Penginputan jika masih ada data yang mau diinput');
+                            $("#pasien").val("");
+                        } else {
+                            alert(data.message);
+                            window.location.reload();
+                        }
+
+                    } else
+                        alert(data.message);
+                },
                 error: function(data) {}
             });
         }
+
+        $("#btn-tambah").click(function() {
+            $("#flag").val('input');
+            $("#idpasien").val('0');
+            $("#pasien").val("");
+            $("#keterangan").val("");
+            $("#btn-hapus").hide();
+            $("#btn-simpan-pasien").html('<i class="fas fa-save"></i> Tambah Pasien');
+            $('#modal-pasien').modal();
+        });
+
+        $("#btn-simpan-pasien").click(function() {
+            if ($("#pasien").val() == '') {
+                alert('Nama pasien tidak boleh kosong');
+                return false;
+            }
+
+            let data = {
+                "cmd": $("#flag").val(),
+                "nama": $("#pasien").val(),
+                "estimasi": $("#estimasi").val(),
+                "keterangan": $("#keterangan").val(),
+                "id": $("#idpasien").val()
+            };
+            postData(data);
+        });
+
+        $("#btn-reload").click(function() {
+            window.location.reload();
+        });
+
+        $("#btn-hapus").click(function() {
+            var result = confirm("Hapus Pasien ini ?");
+            if (result) {
+                let data = {
+                    "cmd": 'delete',
+                    "id": $("#idpasien").val()
+                };
+                postData(data);
+            }
+        });
+
+        //
+
+        $("#btn-set-selesai").click(function() {
+            var result = confirm("Pelayanan Obat untuk pasien ini selesai ?");
+            if (result) {
+                let data = {
+                    "cmd": 'set_selesai',
+                    "id": $("#idpasien-panggil").val()
+                };
+                postData(data);
+            }
+        });
+
+        $("#btn-set-diambil").click(function() {
+            var result = confirm("Obat sudah diambil oleh pasien ?");
+            if (result) {
+                let data = {
+                    "cmd": 'set_diambil',
+                    "id": $("#idpasien-panggil").val()
+                };
+                postData(data);
+            }
+        });
+
 
 
 
